@@ -1,0 +1,130 @@
+--->Crud Application in React Using MySQL as Database with backend in Node JS
+step1
+ReactCrudUsingMysql--> New Folder
+In this Folder create folder Backend
+    backend
+In this folder create react project using vite with name front end
+    react project with name front
+==============================================
+step 2
+Now Enter into Backend Terminal by rt clicking folder backend and open
+integerated Terminal
+On Prompt below initialize npm to add package.json file
+PS D:\Hasina\ReactDemos\ReactCrudUsingMysql\backend> npm init -y
+Then you have install Package
+express
+mysql2
+cors
+body-parser
+Rt Click backend folder create new file with name server.js
+-------------------------------------------------
+Step 3
+Start backend Code 
+Backend is used to create an api which is going to serve data for our frontend
+As we are creating api it is binded with verb (get,post,put,delete)
+----------------------------------------------
+
+step 4 
+Make Database Ready By using following queries
+
+Create database Hasina
+Use Hasina
+Create table employee(
+empid int primary key,
+empname varchar(120),
+emailid varchar(150),
+cellno varchar(11),
+designation varchar(35),
+salary int)
+
+insert into employee values(1,'Hasina','has@gmail.com','9220893036','Manager',34000);
+insert into employee values(2,'Madhuri','madh@gmail.com','8767329573','Sales Exec',30000);
+
+Select * from employee;
+-----------------------------------------------------------
+step 5
+Open server.js file and add following code
+const  express= require("express")
+const cors = require("cors");
+const mysql = require("mysql2")
+const bodyparser =require("body-parser")
+
+const myserver = express();
+
+myserver.listen(7860,()=>{
+    console.log("Server started at port 7860")
+});
+
+const db = mysql.createConnection({
+    host:"localhost",
+    user:"root",
+    password:"root@1234",
+    database:"hasina",
+    port:3306
+});
+
+db.connect((err)=>{
+    if(err)
+    {
+    console.error('Error connecting to database:', err);
+        return;
+    }
+    console.log('Connected to database');
+});
+
+myserver.get("/api/employee/showall",(req,res)=>{
+    const sql = "SELECT * from employee";
+    db.query(sql,(err,result)=>{
+        if(err)
+        {
+            console.log("Not able to fetch data",err);
+            res.send("Error Fetching Employee Data")
+        }
+        else
+        {
+            res.send({status:"Ok",data:result});
+        }
+    })
+})
+Run this url on brower (http://localhost:7860/api/employee/showall)
+===================================
+step 5
+ In Frontend folder open App.js
+ Delete all Code
+and run rfce
+--------------------------
+Install react-router-dom
+create new folder named pages in src folder
+add 4 files as
+ CreateEmployee.jsx
+ EditEmployee.jsx
+ ViewEmployee.jsx
+ DisplayEmployee.jsx
+In Each file run rfce
+----------------------------------
+Then Update App.jsx as below
+
+import React from 'react'
+import {BrowserRouter,Route,Routes} from 'react-router-dom'
+import ViewEmployee from './pages/ViewEmployee'
+import CreateEmployee from './pages/CreateEmployee'
+import EditEmployee from './pages/EditEmployee'
+import DispplayEmployee from './pages/DispplayEmployee'
+function App() {
+  return (
+    <>
+      <BrowserRouter>
+        <Routes>
+          <Route path='/' element={<ViewEmployee/>} />
+          <Route path="/createemp" element={<CreateEmployee/>}/>
+          <Route path="/editemp/:eid" element={<EditEmployee/>}/>
+          <Route path="/displayemp/:eid" element={<DispplayEmployee/>}/>
+        </Routes>
+      </BrowserRouter>
+    </>
+  )
+}
+
+export default App
+--------------------------------
+
